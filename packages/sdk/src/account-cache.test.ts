@@ -17,8 +17,7 @@ import { StreamsClient, type StreamsClientOptions } from './index';
 let harness: TestClientHarness<StreamsClient>;
 let rpc: FakeTransport;
 
-const makeClient = (overrides: Partial<StreamsClientOptions> = {}) =>
-  harness.withClient(overrides);
+const makeClient = (overrides: Partial<StreamsClientOptions> = {}) => harness.withClient(overrides);
 
 const { GetTransactionStatus } = SorobanRpc.Api;
 

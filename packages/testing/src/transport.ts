@@ -37,30 +37,24 @@ export function createFakeTransport(options: FakeTransportOptions = {}) {
   const proto = SorobanRpc.Server.prototype;
   const hash = options.hash ?? DEFAULT_TX_HASH;
 
-  const getAccount = vi
-    .spyOn(proto, 'getAccount')
-    .mockImplementation(async (address: string) => {
-      const sequence = options.accountSequence ?? DEFAULT_ACCOUNT_SEQUENCE;
-      return new Account(address, sequence);
-    });
+  const getAccount = vi.spyOn(proto, 'getAccount').mockImplementation(async (address: string) => {
+    const sequence = options.accountSequence ?? DEFAULT_ACCOUNT_SEQUENCE;
+    return new Account(address, sequence);
+  });
   const simulateTransaction = vi
     .spyOn(proto, 'simulateTransaction')
     .mockResolvedValue(simulationSuccess(options.simulationResult ?? xdr.ScVal.scvVoid()));
   const prepareTransaction = vi
     .spyOn(proto, 'prepareTransaction')
-    .mockImplementation(
-      async (tx) => tx as Awaited<ReturnType<typeof proto.prepareTransaction>>,
-    );
+    .mockImplementation(async (tx) => tx as Awaited<ReturnType<typeof proto.prepareTransaction>>);
   const sendTransaction = vi
     .spyOn(proto, 'sendTransaction')
     .mockResolvedValue(sendResponse(options.sendStatus ?? 'PENDING', { hash }));
-  const getTransaction = vi
-    .spyOn(proto, 'getTransaction')
-    .mockResolvedValue(
-      txResponse(options.transactionStatus ?? SorobanRpc.Api.GetTransactionStatus.SUCCESS, {
-        txHash: hash,
-      }),
-    );
+  const getTransaction = vi.spyOn(proto, 'getTransaction').mockResolvedValue(
+    txResponse(options.transactionStatus ?? SorobanRpc.Api.GetTransactionStatus.SUCCESS, {
+      txHash: hash,
+    }),
+  );
 
   const spies = [
     getAccount,
